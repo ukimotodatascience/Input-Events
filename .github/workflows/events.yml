@@ -1,4 +1,4 @@
-name: Run OpenAI Information to Discord
+name: Run Events Information to Discord
 
 on:
   schedule:
