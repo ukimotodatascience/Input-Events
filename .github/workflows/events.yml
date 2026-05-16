@@ -2,7 +2,7 @@ name: Run Events Information to Discord
 
 on:
   schedule:
-    - cron: '0 * * * *'   # 毎時0分
+    - cron: '20 * * * *'   # 毎時20分
   workflow_dispatch:
 
 jobs:
@@ -20,10 +20,11 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v3
+
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        run: uv sync --frozen
 
       - name: Run main.py
         id: run_connpass
@@ -42,7 +43,7 @@ jobs:
           while [ $attempt -le $max_retries ]; do
             echo "[connpass] Attempt ${attempt}/${max_retries}"
 
-            if python main.py "$FEED_URL" "$WEBHOOK_URL" "$NAME" "$FETCH_MODE" "$HOURS" "$DIFF_DAYS"; then
+            if uv run python main.py "$FEED_URL" "$WEBHOOK_URL" "$NAME" "$FETCH_MODE" "$HOURS" "$DIFF_DAYS"; then
               echo "[connpass] Succeeded on attempt ${attempt}."
               exit 0
             fi
@@ -75,7 +76,7 @@ jobs:
           while [ $attempt -le $max_retries ]; do
             echo "[TECH PLAY] Attempt ${attempt}/${max_retries}"
 
-            if python main.py "$FEED_URL" "$WEBHOOK_URL" "$NAME" "$FETCH_MODE" "$HOURS" "$DIFF_DAYS"; then
+            if uv run python main.py "$FEED_URL" "$WEBHOOK_URL" "$NAME" "$FETCH_MODE" "$HOURS" "$DIFF_DAYS"; then
               echo "[TECH PLAY] Succeeded on attempt ${attempt}."
               exit 0
             fi
