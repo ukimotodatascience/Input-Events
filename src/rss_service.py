@@ -14,7 +14,10 @@ def fetch_xml_root(feed_url: str) -> ET.Element:
     """RSS/Atomを取得して、XMLのルート要素を返す"""
     response = requests.get(feed_url, timeout=30)
     response.raise_for_status()
-    return ET.fromstring(response.text)
+    # response.text は推定エンコーディングでデコードされるため、
+    # RSSのXML宣言とズレると文字化けする場合がある。
+    # バイト列をそのまま渡してXMLパーサに宣言通り解釈させる。
+    return ET.fromstring(response.content)
 
 
 def get_items_yesterday(feed_url: str, diff: int = 1):
