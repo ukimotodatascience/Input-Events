@@ -49,5 +49,5 @@ def run():
         items = get_items_within_hours(feed_url, hours=hours)
 
     for item in items:
-        message = f"📰 [{name}] {item.title}\n{item.url}"
+        message = f"【{name}】\n📰{item.title}\n{item.url}"
         send_to_discord(message, webhook_url)
